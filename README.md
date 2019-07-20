@@ -1,6 +1,19 @@
 # UpdateHubspotCompanies
 A collection of AWS Lambdas to continuously update a Hubspot account.
 
+## Project Structure
+For the setup script to work correctly, lambdas must follow this folder structure:
+```
+lambdas
+├── lambda1
+│   ├── main.py
+│   └── requirements.txt
+└── lambda2
+    ├── main.py
+    └── requirements.txt
+```
+
+
 ## Requirements
 
 * AWS CLI already configured with Administrator permission
@@ -27,12 +40,18 @@ sam local start-api
 ## Deployment
 
 Deployment is carried out using [Terraform](terraform.io).
+Running the [`setup.sh`](deployment/setup.sh) script with the following parameters will build the project according to a strict directory layout.
+```
+./setup.sh <ftp_username> <ftp_password>
+```
+e.g.
+```
+./setup.sh OVR90120 fqfgsflusgfkqwg
+```
 
 ### Terraform
 
-[TODO: Terraform setup script]
-
-Ensure your AWS Credentials file has a user specified that has permissions to write to the S3 bucket and DynamoDB Table. More permissions are often needed, these are stored in [infrastructure/iam/terraform-role.role]
+Ensure your AWS Credentials file has a user specified that has permissions to write to the S3 bucket and DynamoDB Table. More permissions are often needed, these are stored in [deployment/iam/terraform-role.role]
 
 Navigate to the `terraform` folder and initialise Terraform
 ```
