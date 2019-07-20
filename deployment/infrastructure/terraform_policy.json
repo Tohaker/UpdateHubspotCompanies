@@ -1,0 +1,96 @@
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "LogPermissions",
+            "Effect": "Allow",
+            "Action": [
+                "logs:ListTagsLogGroup",
+                "logs:DescribeLogGroups",
+                "logs:DeleteLogGroup",
+                "logs:CreateLogGroup"
+            ],
+            "Resource": "*"
+        },
+        {
+            "Sid": "IAM",
+            "Effect": "Allow",
+            "Action": [
+                "iam:Get*",
+                "iam:List*",
+                "iam:Create*",
+                "iam:Put*",
+                "iam:Delete*",
+                "iam:Pass*"
+            ],
+            "Resource": [
+                "arn:aws:iam::021651181835:role/*"
+            ]
+        },
+        {
+            "Sid": "DynamoDB",
+            "Effect": "Allow",
+            "Action": [
+                "dynamodb:CreateTable",
+                "dynamodb:ListTagsOfResource",
+                "dynamodb:TagResource",
+                "dynamodb:ListTables",
+                "dynamodb:ListBackups",
+                "dynamodb:Describe*",
+                "dynamodb:Delete*"
+            ],
+            "Resource": [
+                "arn:aws:dynamodb:*:021651181835:table/*",
+                "arn:aws:dynamodb:*:021651181835:table/*/stream/*",
+                "arn:aws:dynamodb:*:021651181835:table/*/backup/*"
+            ]
+        },
+        {
+            "Sid": "Lambda",
+            "Effect": "Allow",
+            "Action": [
+                "lambda:Get*",
+                "lambda:List*",
+                "lambda:Create*",
+                "lambda:Delete*",
+                "lambda:Enable*",
+                "lambda:Add*",
+                "lambda:Update*"
+            ],
+            "Resource": [
+                "arn:aws:lambda:*:021651181835:function:*"
+            ]
+        },
+        {
+            "Sid": "Events",
+            "Effect": "Allow",
+            "Action": [
+                "events:Put*",
+                "events:Get*",
+                "events:List*",
+                "events:Write*",
+                "events:Delete*",
+                "events:Describe*",
+                "events:Enable*"
+            ],
+            "Resource": [
+                "arn:aws:events:*:021651181835:rule/*"
+            ]
+        },
+        {
+            "Sid": "CloudWatch",
+            "Effect": "Allow",
+            "Action": [
+                "cloudwatch:Put*",
+                "cloudwatch:Delete*",
+                "cloudwatch:List*",
+                "cloudwatch:Get*",
+                "cloudwatch:Create*",
+                "cloudwatch:Describe*"
+            ],
+            "Resource": [
+                "arn:aws:cloudwatch:*:021651181835:alarm:*"
+            ]
+        }
+    ]
+}
