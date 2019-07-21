@@ -46,7 +46,7 @@ resource "aws_api_gateway_integration_response" "redirect_integration_response" 
   status_code = aws_api_gateway_method_response.response_301.status_code
 
   response_parameters = { 
-      "method.response.header.Location" = "integration.response.header.location" 
+      "method.response.header.Location" = "integration.response.body.location" 
   }
 }
 
