@@ -10,16 +10,35 @@ resource "aws_iam_role" "lambda_download" {
         "Service": "lambda.amazonaws.com"
       },
       "Effect": "Allow",
-      "Sid": ""
+      "Sid": "AssumeLambdaRole"
     }
   ]
 }
 EOF
 }
 
-resource "aws_iam_role_policy" "read_write_services" {
+resource "aws_iam_role" "lambda_redirect" {
+  name                = "lambda_oauthRedirect"
+  assume_role_policy  = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Action": "sts:AssumeRole",
+      "Principal": {
+        "Service": "lambda.amazonaws.com"
+      },
+      "Effect": "Allow",
+      "Sid": "AssumeLambdaRole"
+    }
+  ]
+}
+EOF
+}
+
+resource "aws_iam_policy" "read_write_services" {
   name        = "DynamoDBReadWriteServicesTable"
-  role        = aws_iam_role.lambda_download.id
+  description = "Read to and Write from the specified table."
 
   policy      = <<EOF
 {
@@ -41,9 +60,9 @@ resource "aws_iam_role_policy" "read_write_services" {
 EOF
 }
 
-resource "aws_iam_role_policy" "lambda_logging" {
+resource "aws_iam_policy" "lambda_logging" {
   name        = "CloudWatchLambdaLogging"
-  role        = aws_iam_role.lambda_download.id
+  description = "Create and Write to all CloudWatch Logs."
 
   policy      = <<EOF
 {
@@ -60,4 +79,21 @@ resource "aws_iam_role_policy" "lambda_logging" {
   ]
 }
 EOF
+}
+
+resource "aws_iam_policy_attachment" "attach_logging" {
+  name       = "lambda-attachment"
+  roles      = [
+    aws_iam_role.lambda_download.name,
+    aws_iam_role.lambda_redirect.name
+  ]
+  policy_arn = aws_iam_policy.lambda_logging.arn
+}
+
+resource "aws_iam_policy_attachment" "attach_dyanmo" {
+  name       = "dynamodb-attachment"
+  roles      = [
+    aws_iam_role.lambda_download.name
+  ]
+  policy_arn = aws_iam_policy.read_write_services.arn
 }

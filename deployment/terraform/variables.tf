@@ -1,3 +1,8 @@
+locals { 
+    lambda_download_customers_name  = "DownloadCustomers"
+    lambda_redirect_oauth_name      = "OAuthRedirect"
+}
+
 variable "region" {
   description = "The AWS region to deploy in."
   default = "eu-west-2"
@@ -24,4 +29,8 @@ variable "ftp_url" {
 variable "log_level" {
   description = "Level at which to log in CloudWatch."
   default     = "INFO"
+}
+
+variable "client_id" {
+  description = "Hubspot Client ID."
 }
