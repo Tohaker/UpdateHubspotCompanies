@@ -33,7 +33,9 @@ resource "aws_lambda_function" "redirect_oauth" {
   environment {
     variables = {
       CLIENT_ID     = var.client_id
-      REDIRECT_URI  = "https://www.google.com" // Will change once another API Gateway URL is created.
+      CLIENT_SECRET = var.client_secret
+      REDIRECT_URI  = "${aws_api_gateway_deployment.deployment.invoke_url}${aws_api_gateway_resource.confirm_resource.path}"
+      LOGLEVEL      = var.log_level
     }
   }
 }
@@ -66,11 +68,20 @@ resource "aws_lambda_permission" "allow_execution_from_cloudwatch" {
   source_arn    = aws_cloudwatch_event_rule.every_morning.arn
 }
 
-resource "aws_lambda_permission" "allow_execution_from_api_gateway" {
-  statement_id  = "AllowExecutionFromAPIGateway"
+resource "aws_lambda_permission" "allow_execution_from_redirect_gateway" {
+  statement_id  = "AllowExecutionFromAPIGatewayRedirect"
   action        = "lambda:InvokeFunction"
   function_name = aws_lambda_function.redirect_oauth.function_name
   principal     = "apigateway.amazonaws.com"
 
   source_arn = "arn:aws:execute-api:${var.region}:${data.aws_caller_identity.current.account_id}:${aws_api_gateway_rest_api.oauth_redirect.id}/*/${aws_api_gateway_method.redirect_method.http_method}${aws_api_gateway_resource.redirect_resource.path}"
+}
+
+resource "aws_lambda_permission" "allow_execution_from_confirm_gateway" {
+  statement_id  = "AllowExecutionFromAPIGatewayConfirm"
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.redirect_oauth.function_name
+  principal     = "apigateway.amazonaws.com"
+
+  source_arn = "arn:aws:execute-api:${var.region}:${data.aws_caller_identity.current.account_id}:${aws_api_gateway_rest_api.oauth_redirect.id}/*/${aws_api_gateway_method.confirm_method.http_method}${aws_api_gateway_resource.confirm_resource.path}"
 }
