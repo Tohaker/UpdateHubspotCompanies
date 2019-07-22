@@ -4,7 +4,6 @@ import datetime
 import calendar
 import boto3
 import csv
-import importlib
 import logging
 
 username = os.environ['FTP_USERNAME']
