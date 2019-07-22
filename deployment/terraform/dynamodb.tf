@@ -11,7 +11,7 @@ resource "aws_dynamodb_table" "customers" {
   }
 }
 
-resource "aws_dynamodb_table" "hupspot" {
+resource "aws_dynamodb_table" "hubspot" {
   name           = var.hubspot_table_name
   billing_mode   = "PROVISIONED"
   read_capacity  = 1

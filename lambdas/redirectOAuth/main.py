@@ -23,11 +23,11 @@ def lambda_handler(event, context):
 
     if path == '/redirect':
         redirectUrl = 'https://app.hubspot.com/oauth/authorize'
-        redirectUrl += '?client_id=' + urllib.parse.quote(os.environ['CLIENT_ID'])
+        redirectUrl += '?client_id=' + os.environ['CLIENT_ID']
         redirectUrl += '&scope=contacts'
-        redirectUrl += '&redirect_uri=' + urllib.parse.quote(os.environ['REDIRECT_URI'])
+        redirectUrl += '&redirect_uri=' + os.environ['REDIRECT_URI']
         logger.info("Redirecting to " + redirectUrl)
-        httpStatusCode = 301
+        httpStatusCode = 302
     elif path == '/confirm':
         bodyHTML = get_success_html()
         httpStatusCode = 200
@@ -45,7 +45,7 @@ def lambda_handler(event, context):
         "statusCode": httpStatusCode, 
         "headers": {
             "content-type": contentType,
-            'location': redirectUrl
+            "location": redirectUrl
         },
         "body": bodyHTML
     }
@@ -54,15 +54,17 @@ def get_access_token(code):
     auth_url = ('https://api.hubapi.com/oauth/v1/token')
     data = {
         'grant_type': 'authorization_code',
-        'client_id' : urllib.parse.quote(os.environ['CLIENT_ID']),
-        'client_secret': urllib.parse.quote(os.environ['CLIENT_SECRET']),
-        'redirect_uri': urllib.parse.quote(os.environ['REDIRECT_URI']),
-        'code': code
+        'client_id' : os.environ['CLIENT_ID'],
+        'client_secret': os.environ['CLIENT_SECRET'],
+        'redirect_uri': os.environ['REDIRECT_URI'],
+        'code': code,
+        'headers': {
+            'content-type': 'application/x-www-form-urlencoded'
+        }
     }
     response = requests.post(auth_url, data)
     logger.info(response.json())
-    logger.info(response.text)
-    # save_tokens(response.json())
+    save_tokens(response.json())
 
 def save_tokens(event):
     access_token = event['access_token']

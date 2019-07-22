@@ -74,7 +74,8 @@ resource "aws_iam_policy" "read_write_hubspot" {
         "dynamodb:PutItem",
         "dynamodb:Query",
         "dynamodb:Scan",
-        "dynamodb:UpdateItem"
+        "dynamodb:UpdateItem",
+        "dynamodb:DescribeTable"
       ],
       "Effect": "Allow",
       "Resource": "${aws_dynamodb_table.hubspot.arn}"

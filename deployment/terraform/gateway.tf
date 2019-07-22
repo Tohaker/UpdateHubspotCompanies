@@ -50,11 +50,11 @@ resource "aws_api_gateway_integration" "confirm_integration" {
   uri                       = "arn:aws:apigateway:${var.region}:lambda:path/2015-03-31/functions/${aws_lambda_function.redirect_oauth.arn}/invocations"
 }
 
-resource "aws_api_gateway_method_response" "response_301" {
+resource "aws_api_gateway_method_response" "response_302" {
   rest_api_id = aws_api_gateway_rest_api.oauth_redirect.id
   resource_id = aws_api_gateway_resource.redirect_resource.id
   http_method = aws_api_gateway_method.redirect_method.http_method
-  status_code = "301"
+  status_code = "302"
 
   response_parameters = { 
     "method.response.header.location" = true 
@@ -75,7 +75,7 @@ resource "aws_api_gateway_method_response" "response_200" {
 resource "aws_api_gateway_deployment" "deployment" {
   depends_on    = [
     "aws_api_gateway_method_response.response_200",
-    "aws_api_gateway_method_response.response_301"
+    "aws_api_gateway_method_response.response_302"
   ]
 
   rest_api_id   = aws_api_gateway_rest_api.oauth_redirect.id
