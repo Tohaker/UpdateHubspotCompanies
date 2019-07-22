@@ -36,7 +36,8 @@ def lambda_handler(event, context):
         if not event['queryStringParameters']:
             bodyHTML = get_error_html()
         else:
-            code = event['queryStringParameters']
+            code = event['queryStringParameters']['code']
+            logger.info('Code Received: ' + code)
             get_access_token(code)
             
 
