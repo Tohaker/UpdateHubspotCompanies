@@ -94,7 +94,8 @@ resource "aws_iam_policy" "read_write_hubspot" {
         "dynamodb:Query",
         "dynamodb:Scan",
         "dynamodb:UpdateItem",
-        "dynamodb:DescribeTable"
+        "dynamodb:DescribeTable",
+        "dynamodb:DeleteItem"
       ],
       "Effect": "Allow",
       "Resource": "${aws_dynamodb_table.hubspot.arn}"
@@ -190,6 +191,7 @@ resource "aws_iam_policy_attachment" "attach_hubspot_dynamo" {
   name       = "dynamodb-hubspot-attachment"
   roles      = [
     aws_iam_role.lambda_redirect.name,
+    aws_iam_role.lambda_download.name
   ]
   policy_arn = aws_iam_policy.read_write_hubspot.arn
 }

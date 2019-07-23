@@ -1,2 +1,2 @@
 pysftp
-cffi
+requests

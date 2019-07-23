@@ -244,6 +244,7 @@ $RECYCLE.BIN/
 *.csv
 pytest.ini
 /.idea/
+/.vscode
 
 *.terraform/
 deployment/packages

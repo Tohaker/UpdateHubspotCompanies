@@ -14,6 +14,8 @@ resource "aws_lambda_function" "download_customers" {
       FTP_USERNAME  = var.ftp_username
       FTP_PASSWORD  = var.ftp_password
       FTP_URL       = var.ftp_url
+      CLIENT_ID     = var.client_id
+      CLIENT_SECRET = var.client_secret
       LOGLEVEL      = var.log_level
     }
   }
