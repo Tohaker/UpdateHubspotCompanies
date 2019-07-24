@@ -44,3 +44,8 @@ variable "client_id" {
 variable "client_secret" {
   description = "Hubspot Client Secret."
 }
+
+variable "service_name" {
+  default = "daisy_services"
+}
+

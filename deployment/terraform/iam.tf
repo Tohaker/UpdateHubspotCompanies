@@ -191,7 +191,8 @@ resource "aws_iam_policy_attachment" "attach_hubspot_dynamo" {
   name       = "dynamodb-hubspot-attachment"
   roles      = [
     aws_iam_role.lambda_redirect.name,
-    aws_iam_role.lambda_download.name
+    aws_iam_role.lambda_download.name,
+    aws_iam_role.lambda_update.name
   ]
   policy_arn = aws_iam_policy.read_write_hubspot.arn
 }

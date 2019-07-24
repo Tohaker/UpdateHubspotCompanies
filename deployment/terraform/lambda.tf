@@ -55,7 +55,10 @@ resource "aws_lambda_function" "update_hubspot" {
 
   environment {
     variables = {
+      CLIENT_ID     = var.client_id
+      CLIENT_SECRET = var.client_secret
       LOGLEVEL      = var.log_level
+      SERVICE_NAME  = var.service_name
     }
   }
 }
