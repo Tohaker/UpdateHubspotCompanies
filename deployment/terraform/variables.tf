@@ -2,6 +2,7 @@ locals {
     lambda_download_customers_name  = "DownloadCustomers"
     lambda_redirect_oauth_name      = "OAuthRedirect"
     lambda_update_hubspot_name      = "UpdateHubspot"
+    lambda_match_customers_name     = "MatchCustomerIDs"
 }
 
 variable "region" {
