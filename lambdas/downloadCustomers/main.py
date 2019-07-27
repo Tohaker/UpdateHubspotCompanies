@@ -1,28 +1,61 @@
 import pysftp
-import os
+import os, sys
 import datetime
 import calendar
 import boto3
 import csv
-import importlib
 import logging
+import json
 
 username = os.environ['FTP_USERNAME']
 password = os.environ['FTP_PASSWORD']
 host = os.environ['FTP_URL']
+local_file = '/tmp/file.csv'
 
 now = datetime.datetime.now()
 dynamodb = boto3.resource('dynamodb', region_name='eu-west-2')
+lambda_client = boto3.client('lambda')
 
-logger = logging.getLogger()
-if logger.handlers:
-    for handler in logger.handlers:
-        logger.removeHandler(handler)
-logging.basicConfig(level=os.environ.get("LOGLEVEL", "INFO"))
+if __name__ == 'main':
+    logger = logging.getLogger()
+    if logger.handlers:
+        for handler in logger.handlers:
+            logger.removeHandler(handler)
+    logging.basicConfig(level=os.environ.get("LOGLEVEL", "INFO"))
 
-local_file = '/tmp/file.csv'
+def lambda_handler(event, context):
+    month = now.month
+    month_str = calendar.month_name[month-1]
 
-def downloadFile(file_name):
+    file_name = (month_str[:3].upper() + 'V' + str(now.year)[-2:] + '_' + username + '_Services.CSV')
+    logger.info('Downloading file: ' + file_name)
+
+    download_file(file_name)
+    users = parse_customers_from_file(local_file)
+    payload = json.dumps(users)
+
+    max_size = 262144
+    if sys.getsizeof(payload) >= max_size:
+        items = users.items()
+        payload_1 = json.dumps(dict(list(items)[len(users)//2:]))
+        payload_2 = json.dumps(dict(list(items)[:len(users)//2]))
+        invoke_response_1 = lambda_client.invoke(FunctionName="MatchCustomerIDs",
+                                           InvocationType='Event',
+                                           Payload=payload_1)
+        invoke_response_2 = lambda_client.invoke(FunctionName="MatchCustomerIDs",
+                                           InvocationType='Event',
+                                           Payload=payload_2)     
+        logger.info(invoke_response_1)
+        logger.info(invoke_response_2)
+        return { 'response_1': invoke_response_1['StatusCode'], 'response_2': invoke_response_2['StatusCode'] }                           
+    else:
+        invoke_response = lambda_client.invoke(FunctionName="matchCustomerIDs",
+                                            InvocationType='Event',
+                                            Payload=json.dumps(users))
+        logger.info(invoke_response)
+        return {'response': invoke_response['StatusCode']}
+
+def download_file(file_name):
     port = 2222
 
     cnopts = pysftp.CnOpts()
@@ -32,20 +65,9 @@ def downloadFile(file_name):
         with sftp.cd('Monthly/' + str(now.year)):
                 sftp.get(file_name, local_file)
 
-def uploadCustomersToDynamoDB():
-    table = dynamodb.Table('customers')
-    users = parseCustomersFromFile(local_file)
-    for user in users:
-        table.put_item(
-            Item={
-                'UserId': user,
-                'Services': users[user]
-            }
-        )
-
-def parseCustomersFromFile(file_name):
-    line_count = 0
+def parse_customers_from_file(file_name):
     previous_user = ''
+    headers = []
     users = {}
     services = []
 
@@ -54,41 +76,29 @@ def parseCustomersFromFile(file_name):
     with open(file_name) as csv_file:
         csv_reader = csv.reader(csv_file, delimiter=',')
 
-        for row in csv_reader:
-            if line_count == 0:
+        for index, row in enumerate(csv_reader):
+            if index == 0:
+                headers = row
                 logger.info('Headers are: %s', ", ".join(row))
-                line_count += 1
             else:
-                user_account = row[13]
                 temp = {}
-                temp['quantity'] = row[4]
-                temp['unit_cost'] = row[5]
-                temp['description'] = row[7]
+                for j, item in enumerate(row):
+                    temp[headers[j]] = row[j]
 
-                if user_account == '':
-                    logger.info('Found no user on line %s: %s' % (str(line_count), temp))
+                current_user = temp['End User Account']
+
+                if current_user == '':
+                    logger.info('No user found on line %s: %s' % (str(index), temp))
                     continue
 
-                if previous_user != user_account:
+                if previous_user != current_user:
                     if previous_user != '':
                         users[previous_user] = services
                         services = []
-                    previous_user = user_account
+                    previous_user = current_user
 
                 services.append(temp)
 
-                line_count += 1
-
-    logger.info('Processed %d lines.' % line_count)
-    logger.debug(users)
+    logger.info('Processed %d lines.' % (index + 1))
+    logger.info(users)
     return users
-
-def lambda_handler(event, context):
-    month = datetime.datetime.now().month
-    month_str = calendar.month_name[month-1]
-
-    file_name = (month_str[:3].upper() + 'V' + str(now.year)[-2:] + '_' + username + '_Services.CSV')
-    logger.info('Downloading file: ' + file_name)
-
-    downloadFile(file_name)
-    uploadCustomersToDynamoDB()

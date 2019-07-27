@@ -1,6 +1,8 @@
 locals { 
     lambda_download_customers_name  = "DownloadCustomers"
     lambda_redirect_oauth_name      = "OAuthRedirect"
+    lambda_update_hubspot_name      = "UpdateHubspot"
+    lambda_match_customers_name     = "MatchCustomerIDs"
 }
 
 variable "region" {
@@ -43,3 +45,8 @@ variable "client_id" {
 variable "client_secret" {
   description = "Hubspot Client Secret."
 }
+
+variable "service_name" {
+  default = "daisy_services"
+}
+

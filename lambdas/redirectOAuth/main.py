@@ -3,6 +3,8 @@ import urllib.parse
 import boto3
 import logging
 import requests
+import datetime
+from decimal import Decimal
 
 logger = logging.getLogger()
 if logger.handlers:
@@ -83,12 +85,16 @@ def save_tokens(event):
                 }
             )
 
+    now = datetime.datetime.now().timestamp()
+    expires_at = Decimal(now + expires_in)
+    
     # Add the new token set.
     table.put_item(
         Item={
             'access_token': access_token,
             'refresh_token': refresh_token,
-            'expires_in': expires_in
+            'expires_in': expires_in,
+            'expires_at': expires_at
         }
     )
 
