@@ -45,8 +45,10 @@ do
         rm -rf ${directory}/venv
         rm ${directory}/requirements.txt
     fi
-    zip -r ${directory}/function.zip ${directory}
-    unzip -l ${directory}/function.zip
+    pushd ${directory}
+    zip -r function.zip ./*
+    unzip -l function.zip
+    popd
 done
 
 echo "Done creating function packages!"
