@@ -4,8 +4,7 @@ printf "\nBegin Setup for AWS Lambdas.\n"
 
 function finish {
     rv=$?
-    printf "\nSetup Completed with Error code ${rv}"
-    popd
+    printf "\nSetup Completed with Error code ${rv}\n"
 }
 
 trap finish EXIT

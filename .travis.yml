@@ -15,3 +15,8 @@ addons:
     update: true
 
 install: ./deployment/setup.sh $DAISY_USERNAME $DAISY_PASSWORD $HUBSPOT_CLIENT_ID $HUBSPOT_CLIENT_SECRET
+
+after_success:
+  - echo "Success"
+after_failure:
+  - echo "Failure"

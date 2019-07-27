@@ -1,6 +1,9 @@
 # UpdateHubspotCompanies
 A collection of AWS Lambdas to continuously update a Hubspot account.
 
+Build Status:  
+![Travis Build](https://travis-ci.org/Tohaker/UpdateHubspotCompanies.svg?branch=master)
+
 ## Project Structure
 For the setup script to work correctly, lambdas must follow this folder structure:
 ```
