@@ -80,7 +80,7 @@ def create_property(auth_token, service_name):
 def format_property_value(services):
     _list = ''
     for services in services:
-        _list += services['M']['description']['S'] + ' x ' + services['M']['quantity']['S'] + '\t\tUnit Cost: ' + services['M']['unit_cost']['S'] + '\n'
+        _list += services['M']['Description']['S'] + ' x ' + services['M']['Quantity']['S'] + '\t\tUnit Cost: ' + services['M']['End User Unit Cost']['S'] + '\n'
 
     logger.info(_list)
     return _list
