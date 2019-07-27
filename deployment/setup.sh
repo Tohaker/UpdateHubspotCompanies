@@ -30,7 +30,7 @@ for directory in ./packages/*/
 do 
     tree -a ${directory}
     if test -f "${directory}/requirements.txt"; then
-        python3 -m venv ${directory}/venv
+        virtualenv ${directory}/venv
         source ${directory}/venv/bin/activate
         pip3 install -r ${directory}/requirements.txt
     fi
