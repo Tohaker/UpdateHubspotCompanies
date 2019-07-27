@@ -70,7 +70,7 @@ resource "aws_lambda_function" "match_customer_ids" {
   role              = aws_iam_role.lambda_match.arn
   
   runtime           = "python3.7"
-  timeout           = 3
+  timeout           = 10
 
   environment {
     variables = {
@@ -96,7 +96,6 @@ resource "aws_cloudwatch_log_group" "redirect_hubspot" {
 resource "aws_cloudwatch_log_group" "match_customers" {
   name = "/aws/lambda/${local.lambda_match_customers_name}"
 }
-
 
 resource "aws_cloudwatch_event_rule" "every_morning" {
   name                = "every-morning-at-8am"

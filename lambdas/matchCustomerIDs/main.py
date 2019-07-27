@@ -17,14 +17,20 @@ logging.basicConfig(level=os.environ.get("LOGLEVEL", "INFO"))
 
 def lambda_handler(event, context):
     logger.info(event)
+    upload_customers_to_dynamodb(event)
 
 def upload_customers_to_dynamodb(event):
     table = dynamodb.Table('customers')
-    users = event['Users']
     customers = get_customer_ids()
 
-    for user in users:
+    for user in event:
+        services = []
+        for service in event[user]:
+            services.append({key: value for key, value in service.items() if value})
+
         id = 0
+        logger.info(user)
+        logger.info(services)
 
         for c in customers:
             if c['UserId'] == user:
@@ -33,7 +39,7 @@ def upload_customers_to_dynamodb(event):
         table.put_item(
             Item={
                 'UserId': user,
-                'Services': users[user],
+                'Services': services,
                 'CompanyId': id
             }
         )    
@@ -60,7 +66,7 @@ def get_customer_ids():
         params = urllib.parse.urlencode(parameters)
         get_url = get_all_companies_url + params
         response = requests.get(url=get_url, headers=headers)
-        response = response.json
+        response = response.json()
 
         logger.info(response)
         has_more = response['has-more']
@@ -89,7 +95,7 @@ def get_valid_auth_token():
     token = table.scan()['Items'][0]
 
     if token['expires_at'] > datetime.datetime.now().timestamp():
-        return 'Bearer ' + token['access_token']
+        return token['access_token']
     else:
         refresh_token = token['refresh_token']
         headers = {

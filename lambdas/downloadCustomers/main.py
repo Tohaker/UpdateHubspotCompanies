@@ -41,10 +41,10 @@ def lambda_handler(event, context):
         payload_2 = json.dumps(dict(list(items)[:len(users)//2]))
         invoke_response_1 = lambda_client.invoke(FunctionName="MatchCustomerIDs",
                                            InvocationType='Event',
-                                           Payload=json.dumps(payload_1))
+                                           Payload=payload_1)
         invoke_response_2 = lambda_client.invoke(FunctionName="MatchCustomerIDs",
                                            InvocationType='Event',
-                                           Payload=json.dumps(payload_2))     
+                                           Payload=payload_2)     
         logger.info(invoke_response_1)
         logger.info(invoke_response_2)
         return { 'response_1': invoke_response_1['StatusCode'], 'response_2': invoke_response_2['StatusCode'] }                           
