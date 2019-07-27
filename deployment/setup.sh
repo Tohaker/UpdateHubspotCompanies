@@ -25,10 +25,11 @@ echo "Copying lambda applications..."
 cp -a ../lambdas/. ./packages
 
 echo "Downloading latest python packages..."
+
 for directory in ./packages/*/
 do 
     if test -f "${directory}/requirements.txt"; then
-        python3 -m venv ${directory}/venv
+        virtualenv ${directory}/venv
         source ${directory}/venv/bin/activate
         pip3 install -r ${directory}/requirements.txt
     fi
@@ -42,7 +43,10 @@ do
         rm -rf ${directory}/venv
         rm ${directory}/requirements.txt
     fi
-    zip -r ${directory}/function.zip ${directory}
+    pushd ${directory}
+    zip -r function.zip * .[^.]*
+    unzip -l function.zip
+    popd
 done
 
 echo "Done creating function packages!"

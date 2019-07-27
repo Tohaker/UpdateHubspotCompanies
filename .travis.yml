@@ -4,7 +4,8 @@ dist: xenial
 python: "3.7"
 
 before_install:
-  - sudo apt-get install unzip
+  - sudo apt-get install unzip tree
+  - pip install virtualenv
   - wget https://releases.hashicorp.com/terraform/${TERRAFORM}/terraform_${TERRAFORM}_linux_amd64.zip
   - unzip terraform_${TERRAFORM}_linux_amd64.zip
   - sudo mv terraform /usr/local/bin/
