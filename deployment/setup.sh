@@ -25,8 +25,10 @@ echo "Copying lambda applications..."
 cp -a ../lambdas/. ./packages
 
 echo "Downloading latest python packages..."
+
 for directory in ./packages/*/
 do 
+    ls -la
     if test -f "${directory}/requirements.txt"; then
         python3 -m venv ${directory}/venv
         source ${directory}/venv/bin/activate
