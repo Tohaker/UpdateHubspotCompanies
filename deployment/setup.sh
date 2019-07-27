@@ -48,6 +48,9 @@ done
 
 echo "Done creating function packages!"
 
+echo "Moving to Terraform folder."
+cd terraform
+
 echo "Initialising Terraform."
 terraform init \
     -backend=true \
