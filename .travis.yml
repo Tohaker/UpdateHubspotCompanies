@@ -17,4 +17,4 @@ deploy:
   provider: script
   script: bash deployment/setup.sh $DAISY_USERNAME $DAISY_PASSWORD $HUBSPOT_CLIENT_ID $HUBSPOT_CLIENT_SECRET
   on:
-    branch: master
+    branch: travis-ci-testing
