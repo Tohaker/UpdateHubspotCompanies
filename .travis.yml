@@ -9,14 +9,9 @@ before_install:
   - unzip terraform_${TERRAFORM}_linux_amd64.zip
   - sudo mv terraform /usr/local/bin/
   - terraform --version
+  - chmod +x deployment/setup.sh
 addons:
   apt:
     update: true
 
-install: skip
-
-deploy:
-  provider: script
-  script: bash deployment/setup.sh $DAISY_USERNAME $DAISY_PASSWORD $HUBSPOT_CLIENT_ID $HUBSPOT_CLIENT_SECRET
-  on:
-    branch: travis-ci-testing
+install: ./deployment/setup.sh $DAISY_USERNAME $DAISY_PASSWORD $HUBSPOT_CLIENT_ID $HUBSPOT_CLIENT_SECRET
