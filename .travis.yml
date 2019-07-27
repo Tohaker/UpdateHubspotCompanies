@@ -1,9 +1,14 @@
 language: python
+sudo: required
+dist: xenial
+python: "3.7"
 
 before_install:
-  - sudo apt install software-properties-common -y
-  - sudo add-apt-repository ppa:deadsnakes/ppa -y
-  - sudo apt install python3.7 terraform -y
+  - sudo apt-get install unzip
+  - wget https://releases.hashicorp.com/terraform/${TERRAFORM}/terraform_${TERRAFORM}_linux_amd64.zip
+  - unzip terraform_${TERRAFORM}_linux_amd64.zip
+  - sudo mv terraform /usr/local/bin/
+  - terraform --version
 addons:
   apt:
     update: true
