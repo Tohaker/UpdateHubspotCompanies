@@ -28,7 +28,6 @@ echo "Downloading latest python packages..."
 
 for directory in ./packages/*/
 do 
-    tree -a ${directory}
     if test -f "${directory}/requirements.txt"; then
         virtualenv ${directory}/venv
         source ${directory}/venv/bin/activate
@@ -39,14 +38,13 @@ done
 echo "Creating ZIP file packages..."
 for directory in ./packages/*/
 do 
-    tree -a ${directory}
     if [ -d "${directory}/venv" ]; then
         cp -a ${directory}/venv/lib/python*/site-packages/. ${directory}
         rm -rf ${directory}/venv
         rm ${directory}/requirements.txt
     fi
     pushd ${directory}
-    zip -r function.zip ./*
+    zip -r function.zip * .[^.]*
     unzip -l function.zip
     popd
 done
