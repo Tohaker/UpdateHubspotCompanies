@@ -44,7 +44,7 @@ do
         rm ${directory}/requirements.txt
     fi
     pushd ${directory}
-    zip -r function.zip * .[^.]*
+    zip -rq function.zip * .[^.]*
     unzip -l function.zip
     popd
 done
