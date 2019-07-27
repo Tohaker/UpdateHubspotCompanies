@@ -18,7 +18,7 @@ set -e
 ftp_username=$1
 ftp_password=$2
 client_id=$3
-client_secret$4
+client_secret=$4
 
 echo "Packaging Applications:"
 
