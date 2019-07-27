@@ -50,17 +50,16 @@ echo "Done creating function packages!"
 
 echo "Initialising Terraform."
 terraform init \
-    -backend \
-    -var "region=eu-west-2" \
-    -var "access_key=${AWS_ACCESS_KEY}"
-    -var "secret_key=${AWS_SECRET_KEY}"
+    -backend=true \
+    -backend-config="access_key=${AWS_ACCESS_KEY}" \
+    -backend-config="secret_key=${AWS_SECRET_KEY}"
 
 echo "Planning Terraform."
 terraform plan \
-    -var "ftp_username=${ftp_username}" \
-    -var "ftp_password=${ftp_password}" \
-    -var "client_id=${client_id}" \
-    -var "client_secret=${client_secret}" \
+    -var="ftp_username=${ftp_username}" \
+    -var="ftp_password=${ftp_password}" \
+    -var="client_id=${client_id}" \
+    -var="client_secret=${client_secret}" \
     -out=output.tfplan
 
 echo "Applying Terraform."
