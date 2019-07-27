@@ -46,7 +46,7 @@ do
         rm ${directory}/requirements.txt
     fi
     zip -r ${directory}/function.zip ${directory}
-    less ${directory}/function.zip -f
+    unzip -l ${directory}/function.zip
 done
 
 echo "Done creating function packages!"
