@@ -68,4 +68,4 @@ terraform plan \
 echo "Applying Terraform."
 terraform apply \
     output.tfplan \
-    -auto-approve
+    --auto-approve
