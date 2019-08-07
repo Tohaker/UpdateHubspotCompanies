@@ -49,7 +49,7 @@ def lambda_handler(event, context):
         logger.info(invoke_response_2)
         return { 'response_1': invoke_response_1['StatusCode'], 'response_2': invoke_response_2['StatusCode'] }                           
     else:
-        invoke_response = lambda_client.invoke(FunctionName="matchCustomerIDs",
+        invoke_response = lambda_client.invoke(FunctionName="MatchCustomerIDs",
                                             InvocationType='Event',
                                             Payload=json.dumps(users))
         logger.info(invoke_response)
